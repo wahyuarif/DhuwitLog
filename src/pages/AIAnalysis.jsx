@@ -199,9 +199,7 @@ Maksimal 3 insights dan 3 tips. Respond HANYA dengan JSON, tidak ada teks lain.`
           <div style={{ fontSize: 16, fontWeight: 800, color: "#1A1D2E" }}>
             Analisis AI
           </div>
-          <div style={{ fontSize: 10, color: "#9CA3AF" }}>
-            Powered by Claude AI
-          </div>
+          <div style={{ fontSize: 10, color: "#9CA3AF" }}>Asisten keuangan</div>
         </div>
       </div>
 
