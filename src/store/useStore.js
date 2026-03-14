@@ -32,53 +32,65 @@ export const useStore = create(
             setPeriod: (period) => set({ period }),
 
             addTransaction: (tx) => {
-                const { accounts } = get()
-                const acc = accounts.find(a => a.id === tx.accountId)
-                if (!acc) return
+                const state = get()
+                const acc = state.accounts.find(a => a.id === tx.accountId)
+                if (!acc) return 'error'
                 if (tx.type === 'expense' && acc.b < tx.amount) return 'insufficient'
+
+                console.log('tx received:', tx) // ← tambah ini
+                console.log('tx.date:', tx.date) // ← tambah ini
+
+                const newTransaction = {
+                    id: Date.now(),
+                    type: tx.type,
+                    amount: tx.amount,
+                    cat: tx.cat,
+                    note: tx.note,
+                    account: tx.account,
+                    date: tx.date || new Date().toISOString(),
+                }
+                console.log('newTransaction:', newTransaction) // ← tambah ini
+
+                const updatedAccounts = state.accounts.map(a =>
+                    a.id === tx.accountId
+                        ? { ...a, b: tx.type === 'expense' ? a.b - tx.amount : a.b + tx.amount }
+                        : a
+                )
+
                 set({
-                    transactions: [...get().transactions, { ...tx, id: Date.now(), date: new Date().toISOString() }],
-                    accounts: accounts.map(a =>
-                        a.id === tx.accountId
-                            ? { ...a, b: tx.type === 'expense' ? a.b - tx.amount : a.b + tx.amount }
-                            : a
-                    ),
+                    transactions: [...state.transactions, newTransaction],
+                    accounts: updatedAccounts,
                 })
+
                 return 'success'
             },
 
             deleteTransaction: (id) => {
-                const tx = get().transactions.find(t => t.id === id)
+                const state = get()
+                const tx = state.transactions.find(t => t.id === id)
                 if (!tx) return
+
+                const updatedAccounts = state.accounts.map(a =>
+                    a.n === tx.account
+                        ? { ...a, b: tx.type === 'expense' ? a.b + tx.amount : a.b - tx.amount }
+                        : a
+                )
+
                 set({
-                    transactions: get().transactions.filter(t => t.id !== id),
-                    accounts: get().accounts.map(a =>
-                        a.n === tx.account
-                            ? { ...a, b: tx.type === 'expense' ? a.b + tx.amount : a.b - tx.amount }
-                            : a
-                    ),
+                    transactions: state.transactions.filter(t => t.id !== id),
+                    accounts: updatedAccounts,
                 })
             },
 
             addAccount: (name) => {
+                const state = get()
                 set({
-                    accounts: [...get().accounts, { id: Date.now(), n: name, b: 0 }],
-                })
-            },
-
-            getFiltered: () => {
-                const { transactions, period } = get()
-                const now = new Date()
-                return transactions.filter(t => {
-                    const d = new Date(t.date)
-                    if (period === 'Hari ini') return d.toDateString() === now.toDateString()
-                    if (period === 'Minggu ini') { const w = new Date(now); w.setDate(now.getDate() - 7); return d >= w }
-                    if (period === 'Bulan ini') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
-                    if (period === 'Tahun ini') return d.getFullYear() === now.getFullYear()
-                    return true
+                    accounts: [...state.accounts, { id: Date.now(), n: name, b: 0 }],
                 })
             },
         }),
-        { name: 'dhuwitlog-storage' }
+        {
+            name: 'dhuwitlog-storage',
+        }
     )
 )
