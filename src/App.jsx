@@ -7,6 +7,7 @@ import Accounts from "./pages/Accounts";
 import BottomNav from "./components/BottomNav";
 import Modal from "./components/Modal";
 import ColorPicker from "./components/ColorPicker";
+import Savings from "./pages/Savings";
 
 export default function App() {
   const [page, setPage] = useState("home");
@@ -24,6 +25,7 @@ export default function App() {
     stats: Stats,
     transactions: Transactions,
     accounts: Accounts,
+    savings: Savings,
   };
   const PageComponent = pages[page] || Home;
 
