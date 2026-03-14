@@ -8,6 +8,7 @@ import BottomNav from "./components/BottomNav";
 import Modal from "./components/Modal";
 import ColorPicker from "./components/ColorPicker";
 import Savings from "./pages/Savings";
+import AIAnalysis from "./pages/AIAnalysis";
 
 export default function App() {
   const [page, setPage] = useState("home");
@@ -26,6 +27,7 @@ export default function App() {
     transactions: Transactions,
     accounts: Accounts,
     savings: Savings,
+    ai: AIAnalysis,
   };
   const PageComponent = pages[page] || Home;
 

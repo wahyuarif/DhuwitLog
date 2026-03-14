@@ -1,4 +1,10 @@
-import { Search, Bell, ArrowUpRight } from "lucide-react";
+import {
+  Search,
+  Bell,
+  ArrowUpRight,
+  BarChart2,
+  ChevronRight,
+} from "lucide-react";
 import { useState } from "react";
 import { useStore } from "../store/useStore";
 import TransactionItem from "../components/TransactionItem";
@@ -392,6 +398,56 @@ export default function Home({ onNavigate, onOpenModal }) {
           </div>
           <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 1 }}>
             Catat yang diterima
+          </div>
+        </button>
+
+        <button
+          onClick={() => onNavigate("stats")}
+          style={{
+            background: "#fff",
+            border: "none",
+            borderRadius: 14,
+            padding: 14,
+            cursor: "pointer",
+            textAlign: "left",
+            boxShadow: "0 2px 8px rgba(59,91,219,.07)",
+            transition: "all .2s",
+            gridColumn: "1 / -1",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 11,
+                  background: theme + "15",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <BarChart2 size={18} color={theme} />
+              </div>
+              <div>
+                <div
+                  style={{ fontSize: 13, fontWeight: 700, color: "#1A1D2E" }}
+                >
+                  Lihat Statistik
+                </div>
+                <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 1 }}>
+                  Laporan & budget bulanan
+                </div>
+              </div>
+            </div>
+            <ChevronRight size={16} color="#9CA3AF" />
           </div>
         </button>
       </div>

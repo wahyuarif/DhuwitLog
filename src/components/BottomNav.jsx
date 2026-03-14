@@ -1,9 +1,9 @@
-import { Home, BarChart2, Target, CreditCard, Plus } from "lucide-react";
+import { Home, Target, CreditCard, Plus, Sparkles } from "lucide-react";
 
 const navItems = [
   { id: "home", icon: Home, label: "Beranda" },
-  { id: "stats", icon: BarChart2, label: "Statistik" },
   { id: "savings", icon: Target, label: "Tabungan" },
+  { id: "ai", icon: Sparkles, label: "AI" },
   { id: "accounts", icon: CreditCard, label: "Akun" },
 ];
 
@@ -27,7 +27,7 @@ export default function BottomNav({ currentPage, onNavigate, onOpenModal }) {
         boxShadow: "0 -4px 20px rgba(59,91,219,.08)",
       }}
     >
-      {/* Kiri: Home, Stats */}
+      {/* Kiri: Home, Tabungan */}
       {navItems.slice(0, 2).map(({ id, icon: Icon, label }) => (
         <button
           key={id}
@@ -38,7 +38,7 @@ export default function BottomNav({ currentPage, onNavigate, onOpenModal }) {
             alignItems: "center",
             gap: 3,
             cursor: "pointer",
-            padding: "4px 10px",
+            padding: "4px 14px",
             borderRadius: 10,
             background: "none",
             border: "none",
@@ -71,12 +71,13 @@ export default function BottomNav({ currentPage, onNavigate, onOpenModal }) {
           boxShadow: "0 6px 20px rgba(59,91,219,.35)",
           transform: "translateY(-10px)",
           transition: "all .2s",
+          flexShrink: 0,
         }}
       >
         <Plus size={22} />
       </button>
 
-      {/* Kanan: Tabungan, Akun */}
+      {/* Kanan: AI, Akun */}
       {navItems.slice(2).map(({ id, icon: Icon, label }) => (
         <button
           key={id}
@@ -87,7 +88,7 @@ export default function BottomNav({ currentPage, onNavigate, onOpenModal }) {
             alignItems: "center",
             gap: 3,
             cursor: "pointer",
-            padding: "4px 10px",
+            padding: "4px 14px",
             borderRadius: 10,
             background: "none",
             border: "none",
