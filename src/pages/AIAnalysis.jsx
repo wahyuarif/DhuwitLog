@@ -102,15 +102,15 @@ ${summary}
 
 Berikan analisis dalam format JSON dengan struktur TEPAT seperti ini:
 {
-  "score": <angka 0-100 kesehatan keuangan>,
-  "summary": "<ringkasan singkat 1-2 kalimat>",
+  "score": 75,
+  "summary": "ringkasan singkat 1-2 kalimat",
   "insights": [
-    {"type": "positive/negative/warning", "title": "<judul singkat>", "desc": "<penjelasan 1 kalimat>"}
+    {"type": "positive", "title": "judul singkat", "desc": "penjelasan 1 kalimat"}
   ],
-  "tips": ["<tip 1>", "<tip 2>", "<tip 3>"]
+  "tips": ["tip 1", "tip 2", "tip 3"]
 }
 
-Maksimal 3 insights dan 3 tips. Respond HANYA dengan JSON, tidak ada teks lain.`;
+PENTING: Respond HANYA dengan JSON murni, tanpa markdown, tanpa backtick, tanpa teks lain apapun.`;
 
       const response = await fetch('/api/analyze', {
         method: 'POST',
@@ -119,17 +119,38 @@ Maksimal 3 insights dan 3 tips. Respond HANYA dengan JSON, tidak ada teks lain.`
       });
 
       const data = await response.json();
+      console.log('raw response:', data);
 
       if (data.error) {
-        setError('Gagal: ' + data.error);
+        setError('API Error: ' + data.error);
         return;
       }
 
-      const clean = data.text.replace(/```json|```/g, '').trim();
-      const parsed = JSON.parse(clean);
+      if (!data.text) {
+        setError('Response kosong dari AI');
+        return;
+      }
+
+      // Bersihkan response
+      let clean = data.text.trim();
+      clean = clean
+        .replace(/```json/g, '')
+        .replace(/```/g, '')
+        .trim();
+
+      // Cari JSON di dalam response
+      const jsonMatch = clean.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        setError('Format response tidak valid');
+        console.log('raw text:', clean);
+        return;
+      }
+
+      const parsed = JSON.parse(jsonMatch[0]);
       setAnalysis(parsed);
     } catch (err) {
-      setError('Gagal menganalisis. Coba lagi!');
+      console.log('error:', err);
+      setError('Gagal menganalisis: ' + err.message);
     } finally {
       setLoading(false);
     }
