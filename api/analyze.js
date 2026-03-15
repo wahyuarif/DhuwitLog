@@ -8,8 +8,6 @@ export default async function handler(req, res) {
 
     try {
         const { prompt } = req.body
-        console.log('prompt received:', prompt?.slice(0, 50))
-        console.log('API key exists:', !!process.env.GROQ_API_KEY)
 
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
@@ -26,18 +24,19 @@ export default async function handler(req, res) {
         })
 
         const data = await response.json()
-        console.log('Groq response status:', response.status)
-        console.log('Groq data:', JSON.stringify(data).slice(0, 200))
+        console.log('full groq response:', JSON.stringify(data))
 
-        if (!response.ok) {
-            return res.status(500).json({ error: data.error?.message || 'Groq error' })
-        }
+        const text = data.choices?.[0]?.message?.content
+        console.log('extracted text:', text)
 
-        const text = data.choices?.[0]?.message?.content || ''
-        res.status(200).json({ text })
+        // Kirim full data untuk debug
+        res.status(200).json({
+            text: text || '',
+            debug: data
+        })
 
     } catch (err) {
-        console.log('catch error:', err.message)
+        console.log('error:', err.message)
         res.status(500).json({ error: err.message })
     }
 }
