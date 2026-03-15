@@ -6,14 +6,15 @@ import {
   Search,
 } from 'lucide-react';
 import { useState } from 'react';
+import EditTransactionModal from '../components/EditTransactionModal';
 import TransactionItem from '../components/TransactionItem';
 import { getIconByName } from '../data/categories';
 import { useStore } from '../store/useStore';
-
 export default function Home({ onNavigate, onOpenModal }) {
   const { userName, transactions, period, setPeriod, theme, getCats } =
     useStore();
   const [search, setSearch] = useState('');
+  const [editingTx, setEditingTx] = useState(null);
 
   const now = new Date();
   const todayStr = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
@@ -626,12 +627,21 @@ export default function Home({ onNavigate, onOpenModal }) {
               <div
                 key={tx.id}
                 style={{ borderTop: i > 0 ? '1px solid #F1F5F9' : 'none' }}
+                onClick={() => setEditingTx(tx)}
               >
                 <TransactionItem transaction={tx} />
               </div>
             ))
           )}
         </div>
+
+        {/* Modal di LUAR map */}
+        {editingTx && (
+          <EditTransactionModal
+            transaction={editingTx}
+            onClose={() => setEditingTx(null)}
+          />
+        )}
       </div>
     </div>
   );

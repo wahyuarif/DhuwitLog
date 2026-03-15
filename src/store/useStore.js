@@ -103,10 +103,64 @@ export const useStore = create(
                     ),
                 })
             },
+            editTransaction: (id, updatedTx) => {
+                const state = get()
+                const oldTx = state.transactions.find(t => t.id === id)
+                if (!oldTx) return
+
+                // Kembalikan saldo lama
+                const revertedAccounts = state.accounts.map(a =>
+                    a.n === oldTx.account
+                        ? { ...a, b: oldTx.type === 'expense' ? a.b + oldTx.amount : a.b - oldTx.amount }
+                        : a
+                )
+
+                // Cari akun baru
+                const newAcc = revertedAccounts.find(a => a.id === updatedTx.accountId)
+                if (!newAcc) return
+
+                // Terapkan saldo baru
+                const updatedAccounts = revertedAccounts.map(a =>
+                    a.id === updatedTx.accountId
+                        ? { ...a, b: updatedTx.type === 'expense' ? a.b - updatedTx.amount : a.b + updatedTx.amount }
+                        : a
+                )
+
+                set({
+                    transactions: state.transactions.map(t =>
+                        t.id === id ? {
+                            ...t,
+                            type: updatedTx.type,
+                            amount: updatedTx.amount,
+                            cat: updatedTx.cat,
+                            note: updatedTx.note,
+                            account: newAcc.n,
+                            date: updatedTx.date,
+                        } : t
+                    ),
+                    accounts: updatedAccounts,
+                })
+            },
 
             addAccount: (name) => {
                 const state = get()
                 set({ accounts: [...state.accounts, { id: Date.now(), n: name, b: 0 }] })
+            },
+
+            deleteAccount: (id) => {
+                const state = get()
+                set({ accounts: state.accounts.filter(a => a.id !== id) })
+            },
+
+            editAccount: (id, newName) => {
+                const state = get()
+                const oldName = state.accounts.find(a => a.id === id)?.n
+                set({
+                    accounts: state.accounts.map(a => a.id === id ? { ...a, n: newName } : a),
+                    transactions: state.transactions.map(t =>
+                        t.account === oldName ? { ...t, account: newName } : t
+                    )
+                })
             },
         }),
         { name: 'dhuwitlog-storage' }

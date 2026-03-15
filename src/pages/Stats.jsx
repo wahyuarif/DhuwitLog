@@ -8,11 +8,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { DEFAULT_CATS } from '../data/categories';
 import { useStore } from '../store/useStore';
 
 export default function Stats({ onNavigate }) {
-  const { transactions, theme } = useStore();
+  const { transactions, theme, getCats } = useStore();
   const now = new Date();
 
   const getToday = () => now.toLocaleDateString('en-CA');
@@ -541,7 +540,7 @@ export default function Stats({ onNavigate }) {
         >
           Budget Bulan Ini
         </div>
-        {DEFAULT_CATS.expense.map((cat) => {
+        {getCats('expense').map((cat) => {
           const spent = catTotals[cat.n] || 0;
           const pct = Math.min(100, Math.round((spent / cat.b) * 100));
           const over = spent > cat.b;

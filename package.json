@@ -1,7 +1,10 @@
 {
-  "name": "fintrack",
+  "name": "dhuwitlog",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Finance tracker modern dengan AI Analysis",
+  "author": "Wahyu Arif Kurniawan",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
