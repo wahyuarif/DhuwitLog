@@ -89,9 +89,9 @@ Untuk Vercel, tambahkan di Settings → Environment Variables.
 
 ## 📸 Screenshots
 
-| Home                            | Statistik                         | AI Analysis                 |
-| ------------------------------- | --------------------------------- | --------------------------- |
-| ![Home](./screenshots/home.png) | ![Stats](./screenshots/stats.png) | ![AI](./screenshots/ai.png) |
+| Home                            | Statistik                             | AI Analysis                 |
+| ------------------------------- | ------------------------------------- | --------------------------- |
+| ![Home](./screenshots/home.png) | ![Stats](./screenshots/statistik.png) | ![AI](./screenshots/ai.png) |
 
 ## 👨‍💻 Developer
 
