@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { DEFAULT_CATS } from '../data/categories'
 
 const demoTransactions = [
     { id: 1, type: 'income', amount: 6000000, cat: 'Gaji', note: 'Gaji Maret', account: 'Bank BCA', date: new Date(new Date().setDate(1)).toISOString() },
@@ -26,19 +27,45 @@ export const useStore = create(
             theme: '#3B5BDB',
             userName: 'Pengguna',
             period: 'Hari ini',
+            customCats: { expense: [], income: [] },
 
             setTheme: (theme) => set({ theme }),
             setUserName: (userName) => set({ userName }),
             setPeriod: (period) => set({ period }),
+
+            getCats: (type) => {
+                const state = get()
+                return [
+                    ...DEFAULT_CATS[type],
+                    ...(state.customCats[type] || [])
+                ]
+            },
+
+            addCategory: (type, cat) => {
+                const state = get()
+                set({
+                    customCats: {
+                        ...state.customCats,
+                        [type]: [...(state.customCats[type] || []), { ...cat, id: Date.now() }]
+                    }
+                })
+            },
+
+            deleteCategory: (type, catName) => {
+                const state = get()
+                set({
+                    customCats: {
+                        ...state.customCats,
+                        [type]: state.customCats[type].filter(c => c.n !== catName)
+                    }
+                })
+            },
 
             addTransaction: (tx) => {
                 const state = get()
                 const acc = state.accounts.find(a => a.id === tx.accountId)
                 if (!acc) return 'error'
                 if (tx.type === 'expense' && acc.b < tx.amount) return 'insufficient'
-
-                console.log('tx received:', tx) // ← tambah ini
-                console.log('tx.date:', tx.date) // ← tambah ini
 
                 const newTransaction = {
                     id: Date.now(),
@@ -49,7 +76,6 @@ export const useStore = create(
                     account: tx.account,
                     date: tx.date || new Date().toISOString(),
                 }
-                console.log('newTransaction:', newTransaction) // ← tambah ini
 
                 const updatedAccounts = state.accounts.map(a =>
                     a.id === tx.accountId
@@ -61,7 +87,6 @@ export const useStore = create(
                     transactions: [...state.transactions, newTransaction],
                     accounts: updatedAccounts,
                 })
-
                 return 'success'
             },
 
@@ -69,28 +94,21 @@ export const useStore = create(
                 const state = get()
                 const tx = state.transactions.find(t => t.id === id)
                 if (!tx) return
-
-                const updatedAccounts = state.accounts.map(a =>
-                    a.n === tx.account
-                        ? { ...a, b: tx.type === 'expense' ? a.b + tx.amount : a.b - tx.amount }
-                        : a
-                )
-
                 set({
                     transactions: state.transactions.filter(t => t.id !== id),
-                    accounts: updatedAccounts,
+                    accounts: state.accounts.map(a =>
+                        a.n === tx.account
+                            ? { ...a, b: tx.type === 'expense' ? a.b + tx.amount : a.b - tx.amount }
+                            : a
+                    ),
                 })
             },
 
             addAccount: (name) => {
                 const state = get()
-                set({
-                    accounts: [...state.accounts, { id: Date.now(), n: name, b: 0 }],
-                })
+                set({ accounts: [...state.accounts, { id: Date.now(), n: name, b: 0 }] })
             },
         }),
-        {
-            name: 'dhuwitlog-storage',
-        }
+        { name: 'dhuwitlog-storage' }
     )
 )
